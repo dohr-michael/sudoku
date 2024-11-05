@@ -28,7 +28,7 @@ func printGrid(area *pterm.AreaPrinter, grid *sudoku.Grid) {
 	}
 	content, _ := pterm.DefaultPanel.WithPadding(0).WithBottomPadding(0).WithSameColumnWidth(true).WithPanels(panels).Srender()
 	area.Update(content)
-	time.Sleep(50 * time.Millisecond)
+	time.Sleep(25 * time.Millisecond)
 }
 
 func main() {
@@ -36,7 +36,7 @@ func main() {
 	defer area.Stop()
 	result, err := sudoku.Resolve("3-65-84-- 52------- -87----31 --3-1--8- 9--863--5 -5--9-6-- 13----25- -------74 --52-63--",
 		func(grid *sudoku.Grid) {
-			//printGrid(area, grid)
+			printGrid(area, grid)
 		})
 	if err != nil {
 		log.Fatal(err)

@@ -2,6 +2,7 @@ package sudoku
 
 import (
 	"errors"
+	"math/rand/v2"
 	"sync"
 )
 
@@ -54,6 +55,28 @@ func resolveMultiThread(grid *Grid, row, col int, fn func(*Grid)) *Grid {
 	return nil
 }
 
+func randomized(values []int) []int {
+	sortedValues := make([]int, 0)
+	randomisedValues := make([]int, 0)
+
+	for _, value := range values {
+		sortedValues = append(sortedValues, value)
+	}
+	for len(sortedValues) > 0 {
+		next := rand.IntN(len(sortedValues))
+		randomisedValues = append(randomisedValues, sortedValues[next])
+		tmp := make([]int, 0)
+		for i, v := range sortedValues {
+			if i == next {
+				continue
+			}
+			tmp = append(tmp, v)
+		}
+		sortedValues = tmp
+	}
+	return randomisedValues
+}
+
 func resolve(grid *Grid, row, col int, fn func(*Grid)) *Grid {
 	if grid.IsValid() {
 		fn(grid)
@@ -64,7 +87,9 @@ func resolve(grid *Grid, row, col int, fn func(*Grid)) *Grid {
 	if row > 9 || col > 9 {
 		return nil
 	}
-	availableValues := grid.AvailableValues(row, col)
+	// 12 435 470 ns/op -> without randomization of available values at each iteration
+	//  9 311 365 ns/op -> with randomization of available values at each iteration
+	availableValues := randomized(grid.AvailableValues(row, col))
 	nextRow, nextCol := row, col
 	if col < 9 {
 		nextCol = col + 1
