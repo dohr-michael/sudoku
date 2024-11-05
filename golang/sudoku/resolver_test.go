@@ -47,7 +47,7 @@ func TestResolve(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotGrid, err := Resolve(tt.input)
+			gotGrid, err := Resolve(tt.input, func(g *Grid) {})
 			if tt.wantErr == nil {
 				assert.NoError(err)
 				assert.NotNil(gotGrid)
@@ -75,7 +75,7 @@ func BenchmarkResolve(b *testing.B) {
 	for _, tt := range tests {
 		b.Run(tt.name, func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				_, _ = Resolve(tt.input)
+				_, _ = Resolve(tt.input, func(g *Grid) {})
 			}
 		})
 	}
